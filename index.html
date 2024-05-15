@@ -6,119 +6,125 @@
     <title>Hangman Game</title>
     <link rel="stylesheet" href="styles.css">
     <style>
-        /* Add your CSS styles here */
         body {
             font-family: Arial, sans-serif;
             background-color: antiquewhite;
             text-align: center;
         }
-        .main{
-            border:5px solid black;
-            height:400px;
-            width:400px;
+        .main {
+            border: 5px solid black;
+            height: 400px;
+            width: 400px;
             text-align: center;
-            margin-left:450px;
+            margin: auto;
+            padding: 20px;
+            background-color: white;
+        }
+        input[type="text"] {
+            font-size: 16px;
+            padding: 5px;
+            margin: 10px 0;
+        }
+        button {
+            font-size: 16px;
+            padding: 5px 10px;
+            margin: 5px;
+            cursor: pointer;
         }
     </style>
 </head>
 <body>
     <div class="main">
-    <h1>Hangman Game</h1>
-    <div id="hangman-container">
-        <p id="word-display"></p>
-        <p id="remaining-guesses">Remaining guesses: <span id="remaining-count">6</span></p>
-        <p id="letters-guessed">Letters guessed: <span id="guessed-letters"></span></p>
-        <input type="text" id="guess-input" maxlength="1" placeholder="Enter a letter">
-        <button onclick="guessLetter()">Guess</button>
-        <button onclick="resetGame()">Reset Game</button>
-    </div>
+        <h1>Hangman Game</h1>
+        <div id="hangman-container">
+            <p id="word-display"></p>
+            <p id="remaining-guesses">Remaining guesses: <span id="remaining-count">6</span></p>
+            <p id="letters-guessed">Letters guessed: <span id="guessed-letters"></span></p>
+            <input type="text" id="guess-input" maxlength="1" placeholder="Enter a letter">
+            <button onclick="guessLetter()">Guess</button>
+            <button onclick="resetGame()">Reset Game</button>
+        </div>
 
-    <script>
-        // JavaScript code for Hangman game
-        const words = ['apple', 'banana', 'cherry', 'orange', 'strawberry']; // Sample word list
-        let secretWord = '';
-        let guessedLetters = [];
-        let remainingGuesses = 6;
+        <script>
+            const words = ['apple', 'banana', 'cherry', 'orange', 'strawberry'];
+            let secretWord = '';
+            let guessedLetters = [];
+            let remainingGuesses = 6;
 
-        function startGame() {
-            secretWord = getRandomWord(words);
-            guessedLetters = [];
-            remainingGuesses = 6;
-            updateDisplay();
-        }
+            function startGame() {
+                secretWord = getRandomWord(words);
+                guessedLetters = [];
+                remainingGuesses = 6;
+                updateDisplay();
+            }
 
-        function getRandomWord(wordList) {
-            return wordList[Math.floor(Math.random() * wordList.length)];
-        }
+            function getRandomWord(wordList) {
+                const randomIndex = Math.floor(Math.random() * wordList.length);
+                return wordList[randomIndex];
+            }
 
-        function updateDisplay() {
-            const wordDisplay = document.getElementById('word-display');
-            const guessedLettersDisplay = document.getElementById('guessed-letters');
-            const remainingGuessesDisplay = document.getElementById('remaining-count');
+            function updateDisplay() {
+                const wordDisplay = document.getElementById('word-display');
+                const guessedLettersDisplay = document.getElementById('guessed-letters');
+                const remainingGuessesDisplay = document.getElementById('remaining-count');
 
-            // Display the secret word with correctly guessed letters
-            let displayedWord = '';
-            for (const letter of secretWord) {
-                if (guessedLetters.includes(letter)) {
-                    displayedWord += letter + ' ';
-                } else {
-                    displayedWord += '_ ';
+                let displayedWord = '';
+                for (const letter of secretWord) {
+                    if (guessedLetters.includes(letter)) {
+                        displayedWord += letter + ' ';
+                    } else {
+                        displayedWord += '_ ';
+                    }
                 }
-            }
-            wordDisplay.textContent = displayedWord;
+                wordDisplay.textContent = displayedWord.trim();
 
-            // Display guessed letters
-            guessedLettersDisplay.textContent = guessedLetters.join(', ');
-
-            // Display remaining guesses
-            remainingGuessesDisplay.textContent = remainingGuesses;
-        }
-
-        function guessLetter() {
-            const inputElement = document.getElementById('guess-input');
-            const guess = inputElement.value.toLowerCase().trim();
-
-            if (guess.length !== 1 || !/[a-z]/.test(guess)) {
-                alert('Please enter a single letter from A-Z.');
-                return;
+                guessedLettersDisplay.textContent = guessedLetters.join(', ');
+                remainingGuessesDisplay.textContent = remainingGuesses;
             }
 
-            if (guessedLetters.includes(guess)) {
-                alert('You already guessed that letter.');
-                return;
+            function guessLetter() {
+                const inputElement = document.getElementById('guess-input');
+                const guess = inputElement.value.toLowerCase().trim();
+
+                if (guess.length !== 1 || !/[a-z]/.test(guess)) {
+                    alert('Please enter a single letter from A-Z.');
+                    return;
+                }
+
+                if (guessedLetters.includes(guess)) {
+                    alert('You already guessed that letter.');
+                    return;
+                }
+
+                guessedLetters.push(guess);
+
+                if (!secretWord.includes(guess)) {
+                    remainingGuesses--;
+                }
+
+                updateDisplay();
+
+                if (isWordGuessed()) {
+                    alert('Congratulations! You guessed the word: ' + secretWord);
+                    startGame();
+                } else if (remainingGuesses === 0) {
+                    alert('Game over! The word was: ' + secretWord);
+                    startGame();
+                }
+
+                inputElement.value = '';
             }
 
-            guessedLetters.push(guess);
-
-            if (!secretWord.includes(guess)) {
-                remainingGuesses--;
+            function isWordGuessed() {
+                return secretWord.split('').every(letter => guessedLetters.includes(letter));
             }
 
-            updateDisplay();
-
-            // Check if the player has won or lost
-            if (isWordGuessed()) {
-                alert('Congratulations! You guessed the word: ' + secretWord);
+            function resetGame() {
                 startGame();
-            } else if (remainingGuesses === 0) {
-                alert('Game over! The word was: ' + secretWord);
-                startGame();
             }
 
-            inputElement.value = ''; // Clear input field
-        }
-
-        function isWordGuessed() {
-            return secretWord.split('').every(letter => guessedLetters.includes(letter));
-        }
-
-        function resetGame() {
             startGame();
-        }
-
-        // Initialize game on page load
-        startGame();
-    </script>
+        </script>
     </div>
 </body>
 </html>
