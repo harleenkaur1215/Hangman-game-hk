@@ -1,85 +1,76 @@
-const port = 9075;
+const wordElement = document.getElementById('word');
+const wrongLettersElement = document.getElementById('wrong-letters');
+const playButton = document.getElementById('play-button');
+const popupContainer = document.getElementById('popup-container');
+const notificationContainer = document.getElementById('notification-container');
+const finalMessageElement = document.getElementById('final-message');
+const hangmanParts = document.querySelectorAll('.figure-part');
 
-const credentials = [];
-const ranking = [];
-const gamePending = [];
-let gameOnGoing;
+const wordsList = ['application', 'programming', 'interface', 'wizard'];
+let randomWord = wordsList[Math.floor(Math.random() * wordsList.length)];
+let correctGuesses = [];
+let incorrectGuesses = [];
 
-function verifyCredentials(username, pass) {
-    const user = credentials.find(([user, password]) => user === username);
-    if (user) {
-        return user[1] === pass;
+function updateWord() {
+    wordElement.innerHTML = randomWord
+        .split('')
+        .map(letter => `<span class="letter">${correctGuesses.includes(letter) ? letter : ''}</span>`)
+        .join('');
+
+    const currentWord = wordElement.innerText.replace(/\n/g, '');
+
+    if (currentWord === randomWord) {
+        finalMessageElement.textContent = 'Congratulations! You won! 😃';
+        popupContainer.style.display = 'flex';
     }
-    credentials.push([username, pass]);
-    return true;
 }
 
-const http = require('http');
-const server = http.createServer(async (request, response) => {
-    const { method, url } = request;
+function updateWrongLetters() {
+    wrongLettersElement.innerHTML = `${incorrectGuesses.length > 0 ? '<p>Wrong</p>' : ''}${incorrectGuesses.map(letter => `<span>${letter}</span>`).join('')}`;
 
-    if (method === 'OPTIONS') {
-        response.writeHead(204, {
-            'Access-Control-Allow-Headers': 'content-type',
-            'Access-Control-Max-Age': '86400',
-            'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-            'Access-Control-Allow-Origin': '*',
-            'Connection': 'Keep-Alive',
-            'Keep-Alive': 'timeout=2, max=100',
-            'Vary': 'Accept-Encoding, Origin'
-        });
-        response.end();
-        return;
+    hangmanParts.forEach((part, index) => {
+        part.style.display = index < incorrectGuesses.length ? 'block' : 'none';
+    });
+
+    if (incorrectGuesses.length === hangmanParts.length) {
+        finalMessageElement.textContent = 'Unfortunately you lost. 😕';
+        popupContainer.style.display = 'flex';
     }
+}
 
-    if (method === 'POST') {
-        let body = [];
-        for await (const chunk of request) {
-            body.push(chunk);
-        }
-        body = JSON.parse(Buffer.concat(body).toString());
+function showNotification() {
+    notificationContainer.classList.add('show');
+    setTimeout(() => notificationContainer.classList.remove('show'), 2000);
+}
 
-        if (url === '/ranking') {
-            response.writeHead(200, {
-                'Access-Control-Allow-Origin': '*',
-                'Cache-Control': 'no-cache',
-                'Connection': 'keep-alive',
-                'Content-Type': 'application/json',
-                'Keep-Alive': 'timeout=5',
-                'Transfer-Encoding': 'chunked'
-            });
-            const responseBody = { ranking: ranking.slice(0, 10) };
-            response.write(JSON.stringify(responseBody));
-            response.end();
-            return;
-        }
-
-        if (url === '/register') {
-            const isValid = verifyCredentials(body.nick, body.password);
-            const responseNum = isValid ? 200 : 400;
-            const responseBody = isValid
-                ? { success: "Successful registration" }
-                : { error: "User registered with a different password" };
-
-            response.writeHead(responseNum, {
-                'Access-Control-Allow-Origin': '*',
-                'Cache-Control': 'no-cache',
-                'Connection': 'keep-alive',
-                'Content-Type': 'application/json',
-                'Keep-Alive': 'timeout=5',
-                'Transfer-Encoding': 'chunked'
-            });
-            response.write(JSON.stringify(responseBody));
-            response.end();
-            return;
+window.addEventListener('keydown', event => {
+    if (event.keyCode >= 65 && event.keyCode <= 90) {
+        const letter = event.key.toLowerCase();
+        if (randomWord.includes(letter)) {
+            if (!correctGuesses.includes(letter)) {
+                correctGuesses.push(letter);
+                updateWord();
+            } else {
+                showNotification();
+            }
+        } else {
+            if (!incorrectGuesses.includes(letter)) {
+                incorrectGuesses.push(letter);
+                updateWrongLetters();
+            } else {
+                showNotification();
+            }
         }
     }
 });
 
-server.listen(port, (error) => {
-    if (error) {
-        console.log("Something went wrong");
-    } else {
-        console.log("Listening on port " + port);
-    }
+playButton.addEventListener('click', () => {
+    correctGuesses = [];
+    incorrectGuesses = [];
+    randomWord = wordsList[Math.floor(Math.random() * wordsList.length)];
+    updateWord();
+    updateWrongLetters();
+    popupContainer.style.display = 'none';
 });
+
+updateWord();
