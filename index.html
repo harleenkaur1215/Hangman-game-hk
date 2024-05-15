@@ -5,76 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hangman Game</title>
     <style>
+        /* Add your CSS styles here */
         body {
-            font-family: 'Arial', sans-serif;
-            text-align: center;
-            background-color: #f0f0f0;
-            margin: 0;
-            padding: 20px;
-        }
-
-        #hangman-container {
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            display: inline-block;
-            max-width: 400px;
-            width: 100%;
-        }
-
-        h1 {
-            color: #333;
-        }
-
-        #word-display {
-            font-size: 24px;
-            letter-spacing: 5px;
-            margin: 20px 0;
-            color: #333;
-        }
-
-        #remaining-guesses,
-        #letters-guessed {
-            font-size: 18px;
-            margin: 10px 0;
-            color: #666;
-        }
-
-        #guess-input {
-            padding: 10px;
-            font-size: 16px;
-            width: calc(100% - 22px);
-            margin: 10px 0;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
-
-        button {
-            padding: 10px 20px;
-            font-size: 16px;
-            margin: 10px 5px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-
-        button:hover {
-            background-color: #ddd;
-        }
-
-        button:active {
-            background-color: #ccc;
-        }
-
-        button:nth-child(1) {
-            background-color: #4CAF50;
-            color: white;
-        }
-
-        button:nth-child(2) {
-            background-color: #f44336;
-            color: white;
+            font-family: Arial, sans-serif;
         }
     </style>
 </head>
@@ -82,15 +15,16 @@
     <h1>Hangman Game</h1>
     <div id="hangman-container">
         <p id="word-display"></p>
-        <p id="remaining-guesses">Remaining Guesses: <span id="remaining-count">6</span></p>
-        <p id="letters-guessed">Letters Guessed: <span id="guessed-letters"></span></p>
+        <p id="remaining-guesses">Remaining guesses: <span id="remaining-count">6</span></p>
+        <p id="letters-guessed">Letters guessed: <span id="guessed-letters"></span></p>
         <input type="text" id="guess-input" maxlength="1" placeholder="Enter a letter">
         <button onclick="guessLetter()">Guess</button>
         <button onclick="resetGame()">Reset Game</button>
     </div>
 
     <script>
-        const words = ['apple', 'banana', 'cherry', 'orange', 'strawberry'];
+        // JavaScript code for Hangman game
+        const words = ['apple', 'banana', 'cherry', 'orange', 'strawberry']; // Sample word list
         let secretWord = '';
         let guessedLetters = [];
         let remainingGuesses = 6;
@@ -111,6 +45,7 @@
             const guessedLettersDisplay = document.getElementById('guessed-letters');
             const remainingGuessesDisplay = document.getElementById('remaining-count');
 
+            // Display the secret word with correctly guessed letters
             let displayedWord = '';
             for (const letter of secretWord) {
                 if (guessedLetters.includes(letter)) {
@@ -119,10 +54,12 @@
                     displayedWord += '_ ';
                 }
             }
-            wordDisplay.textContent = displayedWord.trim();
+            wordDisplay.textContent = displayedWord;
 
+            // Display guessed letters
             guessedLettersDisplay.textContent = guessedLetters.join(', ');
 
+            // Display remaining guesses
             remainingGuessesDisplay.textContent = remainingGuesses;
         }
 
@@ -148,6 +85,7 @@
 
             updateDisplay();
 
+            // Check if the player has won or lost
             if (isWordGuessed()) {
                 alert('Congratulations! You guessed the word: ' + secretWord);
                 startGame();
@@ -156,7 +94,7 @@
                 startGame();
             }
 
-            inputElement.value = '';
+            inputElement.value = ''; // Clear input field
         }
 
         function isWordGuessed() {
@@ -167,6 +105,7 @@
             startGame();
         }
 
+        // Initialize game on page load
         startGame();
     </script>
 </body>
