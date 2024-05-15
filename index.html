@@ -8,6 +8,29 @@
         /* Add your CSS styles here */
         body {
             font-family: Arial, sans-serif;
+            text-align: center;
+            padding-top: 50px;
+        }
+        #hangman-container {
+            max-width: 400px;
+            margin: 0 auto;
+            border: 2px solid #ccc;
+            padding: 20px;
+            border-radius: 10px;
+            background-color: #f9f9f9;
+        }
+        button {
+            margin-top: 10px;
+            padding: 8px 16px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: #4caf50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+        }
+        button:hover {
+            background-color: #45a049;
         }
     </style>
 </head>
@@ -15,8 +38,8 @@
     <h1>Hangman Game</h1>
     <div id="hangman-container">
         <p id="word-display"></p>
-        <p id="remaining-guesses">Remaining guesses: <span id="remaining-count">6</span></p>
-        <p id="letters-guessed">Letters guessed: <span id="guessed-letters"></span></p>
+        <p>Remaining guesses: <span id="remaining-count">6</span></p>
+        <p>Letters guessed: <span id="guessed-letters"></span></p>
         <input type="text" id="guess-input" maxlength="1" placeholder="Enter a letter">
         <button onclick="guessLetter()">Guess</button>
         <button onclick="resetGame()">Reset Game</button>
@@ -46,14 +69,7 @@
             const remainingGuessesDisplay = document.getElementById('remaining-count');
 
             // Display the secret word with correctly guessed letters
-            let displayedWord = '';
-            for (const letter of secretWord) {
-                if (guessedLetters.includes(letter)) {
-                    displayedWord += letter + ' ';
-                } else {
-                    displayedWord += '_ ';
-                }
-            }
+            let displayedWord = secretWord.split('').map(letter => guessedLetters.includes(letter) ? letter : '_').join(' ');
             wordDisplay.textContent = displayedWord;
 
             // Display guessed letters
@@ -67,7 +83,7 @@
             const inputElement = document.getElementById('guess-input');
             const guess = inputElement.value.toLowerCase().trim();
 
-            if (guess.length !== 1 || !/[a-z]/.test(guess)) {
+            if (!/^[a-z]$/.test(guess)) {
                 alert('Please enter a single letter from A-Z.');
                 return;
             }
