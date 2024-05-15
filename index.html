@@ -8,10 +8,18 @@
         /* Add your CSS styles here */
         body {
             font-family: Arial, sans-serif;
+            background-color: antiquewhite;
+            text-align: center;
+        }
+        .main{
+            border:5px solid black;
+            height:400px;
+            width:400px;
         }
     </style>
 </head>
 <body>
+    <div class="main">
     <h1>Hangman Game</h1>
     <div id="hangman-container">
         <p id="word-display"></p>
@@ -108,5 +116,6 @@
         // Initialize game on page load
         startGame();
     </script>
+    </div>
 </body>
 </html>
