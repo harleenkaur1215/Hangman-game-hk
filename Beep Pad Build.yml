@@ -1,0 +1,20 @@
+name: Beep Pad Build
+on:
+  push:
+    paths:
+    - 'Projects/Beep Pad/**'
+    - '!**.md'
+  pull_request:
+    paths:
+    - 'Projects/Beep Pad/**'
+    - '!**.md'
+  workflow_dispatch:
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: 8.0.x
+    - run: dotnet build "Projects\Beep Pad\Beep Pad.csproj" --configuration Release

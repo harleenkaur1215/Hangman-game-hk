@@ -1,0 +1,20 @@
+name: Blackjack Build
+on:
+  push:
+    paths:
+    - 'Projects/Blackjack/**'
+    - '!**.md'
+  pull_request:
+    paths:
+    - 'Projects/Blackjack/**'
+    - '!**.md'
+  workflow_dispatch:
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: 8.0.x
+    - run: dotnet build "Projects\Blackjack\Blackjack.csproj" --configuration Release

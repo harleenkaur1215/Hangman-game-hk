@@ -1,0 +1,20 @@
+name: Tug Of War Build
+on:
+  push:
+    paths:
+    - 'Projects/Tug Of War/**'
+    - '!**.md'
+  pull_request:
+    paths:
+    - 'Projects/Tug Of War/**'
+    - '!**.md'
+  workflow_dispatch:
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: 8.0.x
+    - run: dotnet build "Projects\Tug Of War\Tug Of War.csproj" --configuration Release

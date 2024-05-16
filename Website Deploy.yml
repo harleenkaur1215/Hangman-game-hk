@@ -1,0 +1,44 @@
+name: Website Deploy
+on:
+  push:
+    branches:
+    - main
+    paths:
+    - 'Projects/Website/**'
+    #paths-ignore:
+    #- '.vscode/**'
+    #- '.github/**'
+    #- 'LICENSE'
+    #- 'README.md'
+    #- 'CODE_OF_CONDUCT.md'
+    #- '**.md'
+  workflow_dispatch:
+jobs:
+  deployment:
+    if: ${{ github.repository == 'dotnet/dotnet-console-games' && github.ref == 'refs/heads/main' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+    - uses: actions/checkout@v3
+    - uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: 8.0.x
+    - name: publish website
+      run: dotnet publish Projects/Website/Website.csproj --configuration Release
+    - name: index.html base tag
+      run: sed -i 's/<base href="\/" \/>/<base href="\/dotnet-console-games\/" \/>/g' Projects/Website/bin/Release/publish/wwwroot/index.html
+    - name: 404.html
+      run: sed -i 's/\/?p=\//\/dotnet-console-games\/?p=\//g' Projects/Website/bin/Release/publish/wwwroot/404.html
+    - name: .nojekyll
+      run: touch Projects/Website/bin/Release/publish/wwwroot/.nojekyll
+    - name: CODEOWNERS
+      run: echo "* @ZacharyPatten" > Projects/Website/bin/Release/publish/wwwroot/CODEOWNERS
+    - name: push to github-pages branch
+      run: |
+        cd Projects/Website/bin/Release/publish/wwwroot
+        git init --initial-branch=github-pages
+        git config user.name "${GITHUB_ACTOR}"
+        git config user.email "${GITHUB_ACTOR}@users.noreply.github.com"
+        git add .
+        git commit -m 'deploy to github-pages branch'
+        git push --force "https://${{ secrets.PERSONAL_ACCESS_TOKEN }}@github.com/${GITHUB_REPOSITORY}.git" github-pages:github-pages
