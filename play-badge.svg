@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="79" height="20" role="img" aria-label="Play Now" text-rendering="geometricPrecision" shape-rendering="geometricPrecision">
+	<title>Play Now</title>
+	<linearGradient id="s" x2="0" y2="100%">
+		<stop offset="0" stop-color="#bbb" stop-opacity=".1"/>
+		<stop offset="1" stop-opacity=".1"/>
+	</linearGradient>
+	<clipPath id="r">
+		<rect width="79" height="20" rx="3" fill="#fff"/>
+	</clipPath>
+	<g clip-path="url(#r)">
+		<rect width="0" height="20" fill="#555"/>
+		<rect x="0" width="79" height="20" fill="#24292e"/>
+		<rect width="79" height="20" fill="url(#s)"/>
+	</g>
+	<g fill="#fff" text-anchor="middle" font-family="Verdana,Geneva,DejaVu Sans,sans-serif"  font-size="110">
+		<svg x="5" y="3.5" width="13" height="13" xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg" viewBox="0 0 10 10">
+			<path d="M 0 5 A 5 5 0 0 1 10 5 A 5 5 0 0 1 0 5 M 3.5 7.5 L 7.5 5 L 3.5 2.5 L 3.5 7.5" fill-rule="evenodd"/>
+		</svg>
+		<text aria-hidden="true" x="485" y="150" fill="#010101" fill-opacity=".3" transform="scale(.1)" textLength="510">Play Now</text>
+		<text x="485" y="140" transform="scale(.1)" fill="#fff" textLength="510">Play Now</text>
+	</g>
+</svg>
